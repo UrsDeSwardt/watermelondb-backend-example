@@ -11,12 +11,17 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ### Windows
 
-```
+```shell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
+## Dev
 
-## Run
+```shell
+fastapi dev
+```
+
+## Deploy
 
 ```shell
 docker build -t watermelondb-backend-example .
