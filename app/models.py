@@ -38,7 +38,13 @@ class CommentResponse(CommentBase):
     id: int
 
 
-# Sync
+class CommentsResponse(SQLModel):
+    comments: list[CommentResponse]
+
+
+########
+# Sync #
+########
 
 
 class SyncResponse(SQLModel):
