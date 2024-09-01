@@ -1,11 +1,29 @@
 from sqlmodel import Session, select
-from app.models import Post, Comment
+from app.models import Post, Comment, CreatePost, CreateComment
+
+
+def create_post(*, session: Session, post: CreatePost) -> Post:
+    db_post = Post.model_validate(post)
+    session.add(db_post)
+    session.commit()
+    session.refresh(db_post)
+    return db_post
 
 
 def get_post(*, session: Session, post_id: int) -> Post | None:
     statement = select(Post).where(Post.id == post_id)
     post = session.exec(statement).first()
     return post
+
+
+def create_comment(
+    *, session: Session, post_id: int, comment: CreateComment
+) -> Comment:
+    db_comment = Comment.model_validate(comment, update={"post_id": post_id})
+    session.add(db_comment)
+    session.commit()
+    session.refresh(db_comment)
+    return db_comment
 
 
 def get_comments(*, session: Session, post_id: int) -> list[Comment]:

@@ -1,11 +1,18 @@
 from typing import Any
 from fastapi import FastAPI, Depends
-from sqlmodel import SQLModel, Session
-from app.db import get_db, engine
-from app.models import PostResponse, CommentsResponse, SyncResponse
+from sqlmodel import Session
+from app.db import get_db, create_db_and_tables
+from app.models import (
+    PostResponse,
+    CommentsResponse,
+    SyncResponse,
+    CreatePost,
+    CreateComment,
+    CommentResponse,
+)
 from app import crud
 
-SQLModel.metadata.create_all(engine)
+create_db_and_tables()
 
 app = FastAPI()
 
@@ -13,9 +20,21 @@ app = FastAPI()
 # TODO: check return types
 
 
+@app.post("/posts", response_model=PostResponse)
+def create_post(post: CreatePost, db: Session = Depends(get_db)) -> Any:
+    return crud.create_post(session=db, post=post)
+
+
 @app.get("/posts/{post_id}", response_model=PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)) -> Any:
     return crud.get_post(session=db, post_id=post_id)
+
+
+@app.post("/posts/{post_id}/comments", response_model=CommentResponse)
+def create_comment(
+    post_id: int, comment: CreateComment, db: Session = Depends(get_db)
+) -> Any:
+    return crud.create_comment(session=db, post_id=post_id, comment=comment)
 
 
 @app.get("/posts/{post_id}/comments", response_model=CommentsResponse)

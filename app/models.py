@@ -19,6 +19,10 @@ class PostResponse(PostBase):
     id: int
 
 
+class CreatePost(PostBase):
+    pass
+
+
 ###########
 # Comment #
 ###########
@@ -40,6 +44,10 @@ class CommentResponse(CommentBase):
 
 class CommentsResponse(SQLModel):
     comments: list[CommentResponse]
+
+
+class CreateComment(CommentBase):
+    pass
 
 
 ########
