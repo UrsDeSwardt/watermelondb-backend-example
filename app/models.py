@@ -55,5 +55,7 @@ class CreateComment(CommentBase):
 ########
 
 
-class SyncResponse(SQLModel):
-    status: str
+class SyncTable(SQLModel):
+    created: list[SQLModel] | None
+    updated: list[SQLModel] | None
+    deleted: list[str] | None

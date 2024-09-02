@@ -2,6 +2,9 @@
 
 ## Setup
 
+### Requirements
+
+- docker
 
 ### Linux and macOS
 
