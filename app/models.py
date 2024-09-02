@@ -34,7 +34,7 @@ class CommentBase(SQLModel):
 
 class Comment(CommentBase, table=True):
     id: int = Field(default=None, primary_key=True)
-    post_id: int = Field(foreign_key="posts.id")
+    post_id: int = Field(foreign_key="post.id")
     post: "Post" = Relationship(back_populates="comments")
 
 

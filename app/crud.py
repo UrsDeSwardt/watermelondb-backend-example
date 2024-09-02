@@ -1,5 +1,6 @@
 from sqlmodel import Session, select
-from app.models import Post, Comment, CreatePost, CreateComment
+
+from app.models import Comment, CreateComment, CreatePost, Post
 
 
 def create_post(*, session: Session, post: CreatePost) -> Post:

@@ -1,9 +1,10 @@
 from typing import Generator
-from sqlmodel import Session, create_engine, SQLModel
 
-DATABASE_URL = "postgresql://user:password@localhost/dbname"  # Update with your PostgreSQL credentials
+from sqlmodel import Session, SQLModel, create_engine
 
-engine = create_engine(DATABASE_URL)
+from app.settings import settings
+
+engine = create_engine(settings.DATABASE_URL)
 
 
 def get_db() -> Generator[Session, None, None]:
