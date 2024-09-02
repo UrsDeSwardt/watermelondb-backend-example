@@ -59,3 +59,14 @@ class SyncTable(SQLModel):
     created: list[SQLModel] | None
     updated: list[SQLModel] | None
     deleted: list[str] | None
+
+
+class SyncTableResponse(SQLModel):
+    changes: dict[str, SyncTable]
+    timestamp: int | float
+
+
+class GetSyncRequest(SQLModel):
+    lastPulledAt: int | None
+    schemaVersion: int
+    migration: dict | None

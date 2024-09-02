@@ -3,16 +3,10 @@ from typing import Any
 from fastapi import Depends, FastAPI
 from sqlmodel import Session
 
-from app import crud
+from app import crud, sync
 from app.db import create_db_and_tables, get_db
-from app.models import (
-    CommentResponse,
-    CommentsResponse,
-    CreateComment,
-    CreatePost,
-    PostResponse,
-    SyncTable,
-)
+from app.models import (CommentResponse, CommentsResponse, CreateComment,
+                        CreatePost, PostResponse, SyncTable, SyncTableResponse)
 
 create_db_and_tables()
 
@@ -45,9 +39,9 @@ def get_comments(post_id: int, db: Session = Depends(get_db)) -> Any:
     return CommentsResponse(comments=comments)
 
 
-@app.get("/sync", response_model=list[SyncTable])
-def get_sync() -> list[SyncTable]:
-    return [SyncTable(created=[], updated=[], deleted=[])]
+@app.get("/sync", response_model=SyncTableResponse)
+def get_sync(db: Session = Depends(get_db)) -> SyncTableResponse:
+    return sync.get_sync(session=db)
 
 
 @app.post("/sync", response_model=list[SyncTable])
