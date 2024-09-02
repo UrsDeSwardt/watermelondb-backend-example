@@ -21,6 +21,12 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 fastapi dev
 ```
 
+## Test
+
+```shell
+pytest
+```
+
 ## Deploy
 
 ```shell
