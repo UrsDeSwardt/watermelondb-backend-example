@@ -13,3 +13,6 @@ dependencies = [
     "sqlalchemy>=2.0.32",
     "sqlmodel>=0.0.22",
 ]
+
+[tool.ruff]
+exclude = ["migrations"]

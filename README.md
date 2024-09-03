@@ -24,6 +24,17 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 fastapi dev
 ```
 
+### Migrations
+
+```shell
+alembic revision --autogenerate -m "comment"
+```
+
+```shell
+alembic upgrade head
+```
+
+
 ## Test
 
 ```shell

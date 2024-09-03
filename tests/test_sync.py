@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest import TestCase
 
 from fastapi.testclient import TestClient
@@ -37,51 +37,63 @@ class TestGetSync(TestCase):
         assert "updated" in posts
         assert "deleted" in posts
 
-    def test_get_initial_sync_returns_all_posts(self):
+    def test_get_initial_sync_returns_all_data(self):
         setup_helper()
 
         response = self.client.get("/sync")
         tables = response.json()["changes"]
-        posts = tables["post"]
 
-        assert len(posts["created"]) == 2
-        assert len(posts["updated"]) == 0
-        assert len(posts["deleted"]) == 0
+        with self.subTest("Post table"):
+            posts = tables["post"]
+            assert len(posts["created"]) == 2
+            assert len(posts["updated"]) == 0
+            assert len(posts["deleted"]) == 0
 
-    def test_get_initial_sync_returns_all_comments(self):
+        with self.subTest("Comment table"):
+            comments = tables["comment"]
+            assert len(comments["created"]) == 2
+            assert len(comments["updated"]) == 0
+            assert len(comments["deleted"]) == 0
+
+    def test_get_sync_with_timestamp_before_updated_at_returns_changes(self):
+        last_pulled_at = datetime.now(UTC).timestamp() - 1
+
         setup_helper()
 
-        response = self.client.get("/sync")
+        response = self.client.get(f"/sync?last_pulled_at={last_pulled_at}")
         tables = response.json()["changes"]
-        comments = tables["comment"]
 
-        assert len(comments["created"]) == 2
-        assert len(comments["updated"]) == 0
-        assert len(comments["deleted"]) == 0
+        with self.subTest("Post table"):
+            posts = tables["post"]
+            assert len(posts["created"]) == 2
+            assert len(posts["updated"]) == 0
+            assert len(posts["deleted"]) == 0
 
-    def test_get_sync_with_timestamp_returns_changes_after_timestamp(self):
+        with self.subTest("Comment table"):
+            comments = tables["comment"]
+            assert len(comments["created"]) == 2
+            assert len(comments["updated"]) == 0
+            assert len(comments["deleted"]) == 0
+
+    def test_get_sync_with_timestamp_after_updated_at_returns_no_changes(self):
         setup_helper()
 
-        response = self.client.get(f"/sync?lastPulledAt={datetime.now().timestamp()}")
+        last_pulled_at = datetime.now(UTC).timestamp()
+
+        response = self.client.get(f"/sync?last_pulled_at={last_pulled_at}")
         tables = response.json()["changes"]
-        posts = tables["post"]
 
-        assert len(posts["created"]) == 0
-        assert len(posts["updated"]) == 0
-        assert len(posts["deleted"]) == 0
+        with self.subTest("Post table"):
+            posts = tables["post"]
+            assert len(posts["created"]) == 0
+            assert len(posts["updated"]) == 0
+            assert len(posts["deleted"]) == 0
 
-        self.client.post(
-            "/posts",
-            json={"title": "Test title", "content": "Test content"},
-        )
-
-        response = self.client.get(f"/sync?lastPulledAt={datetime.now().timestamp()}")
-        tables = response.json()["changes"]
-        posts = tables["post"]
-
-        assert len(posts["created"]) == 1
-        assert len(posts["updated"]) == 0
-        assert len(posts["deleted"]) == 0
+        with self.subTest("Comment table"):
+            comments = tables["comment"]
+            assert len(comments["created"]) == 0
+            assert len(comments["updated"]) == 0
+            assert len(comments["deleted"]) == 0
 
 
 def setup_helper() -> None:

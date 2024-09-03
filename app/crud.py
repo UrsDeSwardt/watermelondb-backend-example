@@ -20,7 +20,11 @@ def get_post(*, session: Session, post_id: int) -> Post | None:
 def create_comment(
     *, session: Session, post_id: int, comment: CreateComment
 ) -> Comment:
-    db_comment = Comment.model_validate(comment, update={"post_id": post_id})
+    db_comment = Comment.model_validate(
+        comment,
+        update={"post_id": post_id},
+    )
+
     session.add(db_comment)
     session.commit()
     session.refresh(db_comment)

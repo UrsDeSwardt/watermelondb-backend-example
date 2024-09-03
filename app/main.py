@@ -40,8 +40,10 @@ def get_comments(post_id: int, db: Session = Depends(get_db)) -> Any:
 
 
 @app.get("/sync", response_model=SyncTableResponse)
-def get_sync(db: Session = Depends(get_db)) -> SyncTableResponse:
-    return sync.get_sync(session=db)
+def get_sync(
+    last_pulled_at: float | None = None, db: Session = Depends(get_db)
+) -> SyncTableResponse:
+    return sync.get_sync(last_pulled_at=last_pulled_at, session=db)
 
 
 @app.post("/sync", response_model=list[SyncTable])
