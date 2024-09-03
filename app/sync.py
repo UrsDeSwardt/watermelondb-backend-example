@@ -2,8 +2,13 @@ from datetime import UTC, datetime
 
 from sqlmodel import Session, select
 
-from app.models import (Comment, Post, PushSynchResponse, SyncTableRequest,
-                        SyncTableResponse)
+from app.models import (
+    Comment,
+    Post,
+    PushSynchResponse,
+    SyncTableRequest,
+    SyncTableResponse,
+)
 
 
 def get_sync(*, last_pulled_at: float | None, session: Session) -> SyncTableResponse:
@@ -35,7 +40,6 @@ def push_sync(*, request_body: SyncTableRequest, session: Session) -> PushSynchR
 
     if posts:
         for post in posts.get("created") or {}:
-            print("POST", post)
             session.add(Post.model_validate(post))
 
     session.commit()

@@ -42,3 +42,26 @@ class TestPushSync(TestCase):
             posts = session.exec(select(Post)).all()
 
         assert len(posts) == 1
+
+    def test_push_sync_creates_new_comment(self):
+        clear_db()
+
+        self.client.post(
+            "/sync",
+            json={
+                "changes": {
+                    "comment": {
+                        "created": [
+                            {"post_id": 1, "content": "Test content"},
+                        ],
+                        "updated": [],
+                        "deleted": [],
+                    }
+                }
+            },
+        )
+
+        with Session(engine) as session:
+            comments = session.exec(select(Post)).all()
+
+        assert len(comments) == 2
