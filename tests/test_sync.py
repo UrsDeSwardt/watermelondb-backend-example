@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import TestCase
 
 from fastapi.testclient import TestClient
@@ -11,6 +12,7 @@ class TestGetSync(TestCase):
 
     def test_get_sync_returns_correct_status_code(self):
         response = self.client.get("/sync")
+
         assert response.status_code == 200
 
     def test_get_sync_returns_correct_fields(self):
@@ -21,7 +23,6 @@ class TestGetSync(TestCase):
 
     def test_get_sync_returns_correct_tables(self):
         response = self.client.get("/sync")
-
         tables = response.json()["changes"]
 
         assert "post" in tables
@@ -29,7 +30,6 @@ class TestGetSync(TestCase):
 
     def test_get_sync_returns_correct_table_changes(self):
         response = self.client.get("/sync")
-
         tables = response.json()["changes"]
         posts = tables["post"]
 
@@ -41,7 +41,6 @@ class TestGetSync(TestCase):
         setup_helper()
 
         response = self.client.get("/sync")
-
         tables = response.json()["changes"]
         posts = tables["post"]
 
@@ -53,13 +52,36 @@ class TestGetSync(TestCase):
         setup_helper()
 
         response = self.client.get("/sync")
-
         tables = response.json()["changes"]
         comments = tables["comment"]
 
         assert len(comments["created"]) == 2
         assert len(comments["updated"]) == 0
         assert len(comments["deleted"]) == 0
+
+    def test_get_sync_with_timestamp_returns_changes_after_timestamp(self):
+        setup_helper()
+
+        response = self.client.get(f"/sync?lastPulledAt={datetime.now().timestamp()}")
+        tables = response.json()["changes"]
+        posts = tables["post"]
+
+        assert len(posts["created"]) == 0
+        assert len(posts["updated"]) == 0
+        assert len(posts["deleted"]) == 0
+
+        self.client.post(
+            "/posts",
+            json={"title": "Test title", "content": "Test content"},
+        )
+
+        response = self.client.get(f"/sync?lastPulledAt={datetime.now().timestamp()}")
+        tables = response.json()["changes"]
+        posts = tables["post"]
+
+        assert len(posts["created"]) == 1
+        assert len(posts["updated"]) == 0
+        assert len(posts["deleted"]) == 0
 
 
 def setup_helper() -> None:
