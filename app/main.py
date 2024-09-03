@@ -5,8 +5,16 @@ from sqlmodel import Session
 
 from app import crud, sync
 from app.db import create_db_and_tables, get_db
-from app.models import (CommentResponse, CommentsResponse, CreateComment,
-                        CreatePost, PostResponse, SyncTable, SyncTableResponse)
+from app.models import (
+    CommentResponse,
+    CommentsResponse,
+    CreateComment,
+    CreatePost,
+    PostResponse,
+    PushSynchResponse,
+    SyncTableRequest,
+    SyncTableResponse,
+)
 
 create_db_and_tables()
 
@@ -46,6 +54,8 @@ def get_sync(
     return sync.get_sync(last_pulled_at=last_pulled_at, session=db)
 
 
-@app.post("/sync", response_model=list[SyncTable])
-def push_sync() -> list[SyncTable]:
-    return [SyncTable(created=[], updated=[], deleted=[])]
+@app.post("/sync", response_model=PushSynchResponse)
+def push_sync(
+    request_body: SyncTableRequest, db: Session = Depends(get_db)
+) -> PushSynchResponse:
+    return sync.push_sync(request_body=request_body, session=db)

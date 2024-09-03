@@ -76,6 +76,14 @@ class SyncTableResponse(SQLModel):
     timestamp: int | float
 
 
+class SyncTableRequest(SQLModel):
+    changes: dict[str, dict[str, list]]
+
+
+class PushSynchResponse(SQLModel):
+    ok: bool
+
+
 class GetSyncRequest(SQLModel):
     lastPulledAt: int | None
     schemaVersion: int
