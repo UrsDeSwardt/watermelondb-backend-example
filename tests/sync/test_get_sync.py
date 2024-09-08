@@ -99,6 +99,22 @@ class TestGetSyncCreated(TestCase):
             assert len(comments["updated"]) == 0
             assert len(comments["deleted"]) == 0
 
+    def test_get_sync_entity_has_id(self):
+        setup_helper()
+
+        response = self.client.get("/sync")
+        tables = response.json()["changes"]
+
+        with self.subTest("Post table"):
+            posts = tables["post"]["created"]
+            for post in posts:
+                assert "id" in post
+
+        with self.subTest("Comment table"):
+            comments = tables["comment"]["created"]
+            for comment in comments:
+                assert "id" in comment
+
 
 def setup_helper() -> None:
     client = TestClient(app)

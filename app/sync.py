@@ -6,7 +6,6 @@ from app.models import (
     Comment,
     Post,
     PushSynchResponse,
-    SyncTableRequest,
     SyncTableResponse,
 )
 
@@ -21,12 +20,12 @@ def get_sync(*, last_pulled_at: float | None, session: Session) -> SyncTableResp
     return SyncTableResponse(
         changes={
             "post": {
-                "created": posts,
+                "created": [p.model_dump(mode="json") for p in posts],
                 "updated": [],
                 "deleted": [],
             },
             "comment": {
-                "created": comments,
+                "created": [c.model_dump(mode="json") for c in comments],
                 "updated": [],
                 "deleted": [],
             },
@@ -35,9 +34,9 @@ def get_sync(*, last_pulled_at: float | None, session: Session) -> SyncTableResp
     )
 
 
-def push_sync(*, request_body: SyncTableRequest, session: Session) -> PushSynchResponse:
-    posts = request_body.changes.get("post")
-    comments = request_body.changes.get("comment")
+def push_sync(*, changes: dict, session: Session) -> PushSynchResponse:
+    posts = changes.get("post")
+    comments = changes.get("comment")
 
     if posts:
         for post in posts.get("created") or {}:

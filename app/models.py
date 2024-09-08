@@ -67,18 +67,14 @@ class CreateComment(CommentBase):
 
 
 class SyncTable(SQLModel):
-    created: list[SQLModel] | None
-    updated: list[SQLModel] | None
+    created: list[dict] | None
+    updated: list[dict] | None
     deleted: list[str] | None
 
 
 class SyncTableResponse(SQLModel):
     changes: dict[str, SyncTable]
     timestamp: int | float
-
-
-class SyncTableRequest(SQLModel):
-    changes: dict[str, dict[str, list]]
 
 
 class PushSynchResponse(SQLModel):

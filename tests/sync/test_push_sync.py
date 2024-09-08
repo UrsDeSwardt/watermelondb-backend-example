@@ -33,18 +33,16 @@ class TestPushSyncCreated(TestCase):
         self.client.post(
             "/sync",
             json={
-                "changes": {
-                    "post": {
-                        "created": [
-                            {
-                                "id": str(uuid4()),
-                                "title": "Test title",
-                                "content": "Test content",
-                            }
-                        ],
-                        "updated": [],
-                        "deleted": [],
-                    }
+                "post": {
+                    "created": [
+                        {
+                            "id": str(uuid4()),
+                            "title": "Test title",
+                            "content": "Test content",
+                        }
+                    ],
+                    "updated": [],
+                    "deleted": [],
                 }
             },
         )
@@ -67,14 +65,12 @@ class TestPushSyncCreated(TestCase):
         self.client.post(
             "/sync",
             json={
-                "changes": {
-                    "comment": {
-                        "created": [
-                            {"post_id": post_id, "content": "Test content"},
-                        ],
-                        "updated": [],
-                        "deleted": [],
-                    }
+                "comment": {
+                    "created": [
+                        {"post_id": post_id, "content": "Test content"},
+                    ],
+                    "updated": [],
+                    "deleted": [],
                 }
             },
         )
