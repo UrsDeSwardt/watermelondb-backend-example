@@ -13,4 +13,10 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+    try:
+        SQLModel.metadata.create_all(engine)
+    except Exception as e:
+        print(
+            "Creating tables automatically failed, try running `alembic upgrade head`."
+        )
+        raise e

@@ -15,13 +15,13 @@ class TestApi(TestCase):
         )
 
         with self.subTest("returns correct status code"):
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
         with self.subTest("returns id"):
-            assert "id" in response.json()
+            assert "id" in response.json(), response.text
         with self.subTest("returns correct title"):
-            assert response.json()["title"] == "Test title"
+            assert response.json()["title"] == "Test title", response.text
         with self.subTest("content"):
-            assert response.json()["content"] == "Test content"
+            assert response.json()["content"] == "Test content", response.text
 
     def test_get_post(self):
         response = self.client.post(
@@ -33,13 +33,13 @@ class TestApi(TestCase):
         response = self.client.get(f"/posts/{post_id}")
 
         with self.subTest("returns correct status code"):
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
         with self.subTest("returns id"):
-            assert response.json()["id"] == post_id
+            assert response.json()["id"] == post_id, response.text
         with self.subTest("returns correct title"):
-            assert response.json()["title"] == "Test title"
+            assert response.json()["title"] == "Test title", response.text
         with self.subTest("returns correct content"):
-            assert response.json()["content"] == "Test content"
+            assert response.json()["content"] == "Test content", response.text
 
     def test_create_comment(self):
         response = self.client.post(
@@ -54,11 +54,11 @@ class TestApi(TestCase):
         )
 
         with self.subTest("returns correct status code"):
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
         with self.subTest("returns id"):
-            assert "id" in response.json()
+            assert "id" in response.json(), response.text
         with self.subTest("returns correct content"):
-            assert response.json()["content"] == "Test comment"
+            assert response.json()["content"] == "Test comment", response.text
 
     def test_get_comments(self):
         response = self.client.post(
@@ -75,8 +75,10 @@ class TestApi(TestCase):
         response = self.client.get(f"/posts/{post_id}/comments")
 
         with self.subTest("returns correct status code"):
-            assert response.status_code == 200
+            assert response.status_code == 200, response.text
         with self.subTest("returns correct number of comments"):
-            assert len(response.json()["comments"]) == 1
+            assert len(response.json()["comments"]) == 1, response.text
         with self.subTest("returns correct comment content"):
-            assert response.json()["comments"][0]["content"] == "Test comment"
+            assert (
+                response.json()["comments"][0]["content"] == "Test comment"
+            ), response.text

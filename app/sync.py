@@ -37,10 +37,15 @@ def get_sync(*, last_pulled_at: float | None, session: Session) -> SyncTableResp
 
 def push_sync(*, request_body: SyncTableRequest, session: Session) -> PushSynchResponse:
     posts = request_body.changes.get("post")
+    comments = request_body.changes.get("comment")
 
     if posts:
         for post in posts.get("created") or {}:
             session.add(Post.model_validate(post))
+
+    if comments:
+        for comment in comments.get("created") or {}:
+            session.add(Comment.model_validate(comment))
 
     session.commit()
 

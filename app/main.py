@@ -1,4 +1,5 @@
 from typing import Any
+from uuid import UUID
 
 from fastapi import Depends, FastAPI
 from sqlmodel import Session
@@ -30,19 +31,19 @@ def create_post(post: CreatePost, db: Session = Depends(get_db)) -> Any:
 
 
 @app.get("/posts/{post_id}", response_model=PostResponse)
-def get_post(post_id: int, db: Session = Depends(get_db)) -> Any:
+def get_post(post_id: UUID, db: Session = Depends(get_db)) -> Any:
     return crud.get_post(session=db, post_id=post_id)
 
 
 @app.post("/posts/{post_id}/comments", response_model=CommentResponse)
 def create_comment(
-    post_id: int, comment: CreateComment, db: Session = Depends(get_db)
+    post_id: UUID, comment: CreateComment, db: Session = Depends(get_db)
 ) -> Any:
     return crud.create_comment(session=db, post_id=post_id, comment=comment)
 
 
 @app.get("/posts/{post_id}/comments", response_model=CommentsResponse)
-def get_comments(post_id: int, db: Session = Depends(get_db)) -> Any:
+def get_comments(post_id: UUID, db: Session = Depends(get_db)) -> Any:
     comments = crud.get_comments(session=db, post_id=post_id)
     return CommentsResponse(comments=comments)
 

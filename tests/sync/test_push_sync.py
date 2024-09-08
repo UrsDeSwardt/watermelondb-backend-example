@@ -1,11 +1,12 @@
 from unittest import TestCase
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
 from app.db import engine
 from app.main import app
-from app.models import Post
+from app.models import Post, Comment
 from tests.utils import clear_db
 
 
@@ -30,7 +31,13 @@ class TestPushSync(TestCase):
             json={
                 "changes": {
                     "post": {
-                        "created": [{"title": "Test title", "content": "Test content"}],
+                        "created": [
+                            {
+                                "id": str(uuid4()),
+                                "title": "Test title",
+                                "content": "Test content",
+                            }
+                        ],
                         "updated": [],
                         "deleted": [],
                     }
@@ -46,13 +53,20 @@ class TestPushSync(TestCase):
     def test_push_sync_creates_new_comment(self):
         clear_db()
 
+        response = self.client.post(
+            "/posts",
+            json={"title": "", "content": ""},
+        )
+
+        post_id = response.json()["id"]
+
         self.client.post(
             "/sync",
             json={
                 "changes": {
                     "comment": {
                         "created": [
-                            {"post_id": 1, "content": "Test content"},
+                            {"post_id": post_id, "content": "Test content"},
                         ],
                         "updated": [],
                         "deleted": [],
@@ -62,6 +76,6 @@ class TestPushSync(TestCase):
         )
 
         with Session(engine) as session:
-            comments = session.exec(select(Post)).all()
+            comments = session.exec(select(Comment)).all()
 
-        assert len(comments) == 2
+        assert len(comments) == 1
