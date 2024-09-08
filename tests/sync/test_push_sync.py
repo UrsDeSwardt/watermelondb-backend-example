@@ -79,3 +79,4 @@ class TestPushSync(TestCase):
             comments = session.exec(select(Comment)).all()
 
         assert len(comments) == 1
+        assert str(comments[0].post_id) == post_id
