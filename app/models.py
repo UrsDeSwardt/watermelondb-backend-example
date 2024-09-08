@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from uuid import UUID, uuid4
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -13,7 +14,7 @@ class PostBase(SQLModel):
 
 
 class Post(PostBase, table=True):
-    id: int = Field(default=None, primary_key=True)
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
     comments: list["Comment"] = Relationship(back_populates="post")
     created_at: datetime = Field(default=datetime.now(UTC))
     updated_at: datetime = Field(default=datetime.now(UTC))
@@ -39,7 +40,7 @@ class CommentBase(SQLModel):
 
 
 class Comment(CommentBase, table=True):
-    id: int = Field(default=None, primary_key=True)
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
     post_id: int = Field(foreign_key="post.id")
     post: "Post" = Relationship(back_populates="comments")
     created_at: datetime = Field(default=datetime.now(UTC))
