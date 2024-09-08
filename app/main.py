@@ -2,6 +2,7 @@ from typing import Any
 from uuid import UUID
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 
 from app import crud, sync
@@ -20,6 +21,14 @@ from app.models import (
 create_db_and_tables()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # TODO: check return types
