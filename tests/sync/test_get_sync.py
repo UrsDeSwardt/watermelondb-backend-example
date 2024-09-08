@@ -55,6 +55,10 @@ class TestGetSync(TestCase):
             assert len(comments["updated"]) == 0
             assert len(comments["deleted"]) == 0
 
+
+class TestGetSyncCreated(TestCase):
+    client = TestClient(app)
+
     def test_get_sync_with_timestamp_before_updated_at_returns_changes(self):
         last_pulled_at = datetime.now(UTC).timestamp() - 1
 

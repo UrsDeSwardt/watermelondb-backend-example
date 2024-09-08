@@ -23,6 +23,10 @@ class TestPushSync(TestCase):
 
         assert response.json()["ok"] is True
 
+
+class TestPushSyncCreated(TestCase):
+    client = TestClient(app)
+
     def test_push_sync_creates_new_post(self):
         clear_db()
 
