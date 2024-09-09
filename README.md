@@ -1,27 +1,31 @@
-# watermelondb-backend-example
+# Watermelondb Backend Example
 
-## Setup
+This is an example of a backend for [WatermelonDB](https://watermelondb.dev/docs) using [FastAPI](https://fastapi.tiangolo.com/).
+The frontend of this example can be found [here](https://github.com/UrsDeSwardt/watermelondb-nextjs-example).
 
-### Requirements
+## Requirements
 
-- docker
+- [docker](https://www.docker.com/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation)
 
-### Linux and macOS
+## Running the example
 
-```shell
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### Windows
+Ensure the database is running:
 
 ```shell
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+docker compose up db
 ```
 
-## Dev
+Run the dev server:
 
 ```shell
 fastapi dev
+```
+
+## Testing
+
+```shell
+pytest
 ```
 
 ### Migrations
@@ -32,21 +36,4 @@ alembic revision --autogenerate -m "comment"
 
 ```shell
 alembic upgrade head
-```
-
-
-## Test
-
-```shell
-pytest
-```
-
-## Deploy
-
-```shell
-docker build -t watermelondb-backend-example .
-```
-
-```shell
-docker run -p 8000:80 watermelondb-backend-example
 ```
