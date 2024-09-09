@@ -79,9 +79,3 @@ class SyncTableResponse(SQLModel):
 
 class PushSynchResponse(SQLModel):
     ok: bool
-
-
-class GetSyncRequest(SQLModel):
-    lastPulledAt: int | None
-    schemaVersion: int
-    migration: dict | None
